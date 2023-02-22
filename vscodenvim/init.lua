@@ -11,12 +11,24 @@ vim.g.mapleader        = " "
 vim.opt.syntax         = "enable"
 vim.opt.termguicolors  = true
 vim.opt.background     = "dark"
+vim.opt.clipboard      = "unnamedplus"
+
+-- [[ Highlight on yank ]]
+-- See `:help vim.highlight.on_yank()`
+local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    vim.highlight.on_yank()
+  end,
+  group = highlight_group,
+  pattern = '*',
+})
 ---vim.cmd("colorscheme tender")
 
 --- Plugins: VimPlug
 ---local Plug = vim.fn['plug#']
 ---vim.call("plug#begin")
----Plug("tpope/vim-repeat")                
+---Plug("tpope/vim-repeat")
 ---Plug("sheerun/vim-polyglot")
 ---Plug("bkad/CamelCaseMotion")
 ---Plug("junegunn/vim-easy-align")
@@ -104,18 +116,18 @@ end)
 ---}
 
 --- Clipboard fix
-vim.g.clipboard = {
-    name = "wslclipboard",
-    copy = {
-        ["+"] = "/mnt/c/Programs/Win32yank/win32yank.exe -i --crlf",
-        ["*"] = "/mnt/c/Programs/Win32yank/win32yank.exe -i --crlf",
-    },
-    paste = {
-        ["+"] = "/mnt/c/Programs/Win32yank/win32yank.exe -o --lf",
-        ["*"] = "/mnt/c/Programs/Win32yank/win32yank.exe -o --lf"
-    },
-    cache_enabled = true
-}
+---vim.g.clipboard = {
+---    name = "wslclipboard",
+---    copy = {
+---        ["+"] = "/mnt/c/Programs/Win32yank/win32yank.exe -i --crlf",
+---        ["*"] = "/mnt/c/Programs/Win32yank/win32yank.exe -i --crlf",
+---    },
+---    paste = {
+---        ["+"] = "/mnt/c/Programs/Win32yank/win32yank.exe -o --lf",
+---        ["*"] = "/mnt/c/Programs/Win32yank/win32yank.exe -o --lf"
+---    },
+---    cache_enabled = true
+---}
 
 --- Mark fix (I dare you to write this better)
 Mark_a = 1
@@ -209,35 +221,47 @@ local multiply_current_character = '"ryl"r' .. vim.v.count1 .. "p"
 local multiply_selection = '"rygv<Esc>"r' .. vim.v.count1 .. "p"
 
 --# Hops
-function Hop_forward_f_sameline() hop.hint_char1({
-    direction = directions.AFTER_CURSOR,
-    current_line_only = true
-})
+function Hop_forward_f_sameline()
+    hop.hint_char1({
+        direction = directions.AFTER_CURSOR,
+        current_line_only = true
+    })
 end
-function Hop_backward_f_sameline() hop.hint_char1({
-    direction = directions.BEFORE_CURSOR,
-    current_line_only = true
-})
+
+function Hop_backward_f_sameline()
+    hop.hint_char1({
+        direction = directions.BEFORE_CURSOR,
+        current_line_only = true
+    })
 end
-function Hop_forward_t_sameline() hop.hint_char1({
-    direction = directions.AFTER_CURSOR,
-    current_line_only = true,
-    hint_offset = -1,
-})
+
+function Hop_forward_t_sameline()
+    hop.hint_char1({
+        direction = directions.AFTER_CURSOR,
+        current_line_only = true,
+        hint_offset = -1,
+    })
 end
-function Hop_backward_t_sameline() hop.hint_char1({
-    direction = directions.BEFORE_CURSOR,
-    current_line_only = true,
-    hint_offset = 1,
-})
+
+function Hop_backward_t_sameline()
+    hop.hint_char1({
+        direction = directions.BEFORE_CURSOR,
+        current_line_only = true,
+        hint_offset = 1,
+    })
 end
 
 --# Vscode: Folding
 function Vscode_toggle_fold() vim.fn.VSCodeNotify("editor.toggleFold") end
+
 function Vscode_fold_recursively() vim.fn.VSCodeNotify("editor.foldRecursively") end
+
 function Vscode_fold_all() vim.fn.VSCodeNotify("editor.foldAll") end
+
 function Vscode_unfold_all() vim.fn.VSCodeNotify("editor.unfoldAll") end
+
 function Vscode_unfold_recursively() vim.fn.VSCodeNotify("editor.unfoldRecursively") end
+
 function Vscode_goto_parent_fold() vim.fn.VSCodeNotify("editor.gotoParentFold") end
 
 --# Vscode: All remaps
@@ -245,42 +269,88 @@ function Vscode_toggle_typewriter() vim.fn.VSCodeNotify("toggleTypewriter") end
 
 --# Vscode: Normal remaps
 function Vscode_trim_left() vim.fn.VSCodeNotify("yo1dog.cursor-trim.lTrimCursor") end
+
 function Vscode_trim_right() vim.fn.VSCodeNotify("yo1dog.cursor-trim.rTrimCursor") end
+
 function Vscode_trim_both() vim.fn.VSCodeNotify("yo1dog.cursor-trim.trimCursor") end
+
 function Vscode_reveal_definition_aside() vim.fn.VSCodeNotify("editor.action.revealDefinitionAside") end
+
 function Vscode_toggle_sticky_scroll() vim.fn.VSCodeNotify("editor.action.toggleStickyScroll") end
+
 function Vscode_trim_trailing_whitespace() vim.fn.VSCodeNotify("editor.action.trimTrailingWhitespace") end
+
 function Vscode_open_link() vim.fn.VSCodeNotify("editor.action.openLink") end
+
 function Vscode_insert_line_above() vim.fn.VSCodeCall("editor.action.insertLineBefore") end
-function Vscode_insert_line_above_moveup() Vscode_insert_line_above() vim.cmd("norm k") end
+
+function Vscode_insert_line_above_moveup()
+    Vscode_insert_line_above()
+    vim.cmd("norm k")
+end
+
 function Vscode_outdent() vim.fn.VSCodeNotify("editor.action.outdentLines") end
+
 function Vscode_indent() vim.fn.VSCodeNotify("editor.action.indentLines") end
+
 function Vscode_comment() vim.fn.VSCodeNotify("editor.action.commentLine") end
+
 function Vscode_reindent() vim.fn.VSCodeNotify("editor.action.reindentlines") end
+
 function Vscode_convert_to_spaces() vim.fn.VSCodeNotify("editor.action.indentationToSpaces") end
+
 function Vscode_convert_to_tabs() vim.fn.VSCodeNotify("editor.action.indentationToTabs") end
+
 function Vscode_indent_with_spaces() vim.fn.VSCodeNotify("editor.action.indentUsingSpaces") end
+
 function Vscode_indent_with_tabs() vim.fn.VSCodeNotify("editor.action.indentUsingTabs") end
+
 function Vscode_change_encoding() vim.fn.VSCodeNotify("workbench.action.editor.changeEncoding") end
+
 function Vscode_goto_references() vim.fn.VSCodeNotify("editor.action.goToReferences") end
+
 function Vscode_goto_implementation() vim.fn.VSCodeNotify("editor.action.goToImplementation") end
+
 function Vscode_goto_typedefination() vim.fn.VSCodeNotify("editor.action.goToTypeDefinition") end
+
 function Vscode_save() vim.fn.VSCodeNotify("workbench.action.files.save") end
+
 function Vscode_quite() vim.fn.VSCodeNotify("workbench.action.closeActiveEditor") end
+
 function Vscode_goto_editor_symbol() vim.fn.VSCodeNotify("workbench.action.gotoSymbol") end
+
+function Vscode_goto_workspace_symbol() vim.fn.VSCodeNotify("workbench.action.showAllSymbols") end
+
+function Vscode_bookmark_toggle() vim.fn.VSCodeNotify("bookmarks.toggle") end
+
+function Vscode_bookmark_list() vim.fn.VSCodeNotify("bookmarks.list") end
+
+-- tabs
+function Vscode_editor_next() vim.fn.VSCodeNotify("workbench.action.nextEditor") end
+
+function Vscode_editor_previous() vim.fn.VSCodeNotify("workbench.action.previousEditor") end
+
+function Vscode_editor_close_other() vim.fn.VSCodeNotify("workbench.action.closeOtherEditors") end
+
+function Vscode_editor_new_untitled_file() vim.fn.VSCodeNotify("workbench.action.files.newUntitledFile") end
+
 --# Vscode: Visual remaps
 function Vscode_vis_codesnap() vim.fn.VSCodeNotifyVisual("codesnap.start", true) end
+
 function Vscode_vis_outdent() vim.fn.VSCodeNotifyVisual("editor.action.outdentLines", false) end
+
 function Vscode_vis_indent() vim.fn.VSCodeNotifyVisual("editor.action.indentLines", false) end
+
 function Vscode_vis_comment() vim.fn.VSCodeNotifyVisual("editor.action.commentLine", false) end
+
 function Vscode_vis_reindent() vim.fn.VSCodeNotifyVisual("editor.action.reindentselectedlines", true) end
+
 --- Plugins: options
 vim.g.camelcasemotion_key = "<leader>"
 vim.g.targets_nl          = "nh"
 
 --- Vscode
 if vim.g.vscode then
-
     --# Vscode: Folding
     vim.keymap.set("n", "za", Vscode_toggle_fold)
     vim.keymap.set("n", "zc", Vscode_fold_recursively)
@@ -293,37 +363,50 @@ if vim.g.vscode then
     vim.keymap.set("", "zy", Vscode_toggle_typewriter)
 
     --# Vscode: Normal remaps
-    vim.keymap.set("n", "zh",        Vscode_trim_left)
-    vim.keymap.set("n", "zl",        Vscode_trim_right)
-    vim.keymap.set("n", "zi",        Vscode_trim_both)
-    vim.keymap.set("n", "gD",        Vscode_reveal_definition_aside)
-    vim.keymap.set("n", "gr",        Vscode_goto_references)
-    vim.keymap.set("n", "gi",        Vscode_goto_implementation)
-    vim.keymap.set("n", "gt",        Vscode_goto_typedefination)
+    vim.keymap.set("n", "zh", Vscode_trim_left)
+    vim.keymap.set("n", "zl", Vscode_trim_right)
+    vim.keymap.set("n", "zi", Vscode_trim_both)
+    vim.keymap.set("n", "gD", Vscode_reveal_definition_aside)
+    vim.keymap.set("n", "gr", Vscode_goto_references)
+    vim.keymap.set("n", "gi", Vscode_goto_implementation)
+    vim.keymap.set("n", "gt", Vscode_goto_typedefination)
     --vim.keymap.set("n", "<leader>s", Vscode_toggle_sticky_scroll)
-    vim.keymap.set("n", "==",        Vscode_trim_trailing_whitespace)
-    vim.keymap.set("n", "gl",        Vscode_open_link)
-    vim.keymap.set("n", "<C-k>",     Vscode_insert_line_above_moveup)
-    vim.keymap.set("n", "<<",        Vscode_outdent)
-    vim.keymap.set("n", ">>",        Vscode_indent)
-    vim.keymap.set("n", "gcc",       Vscode_comment)
-    vim.keymap.set("n", "=>",        Vscode_reindent)
-    vim.keymap.set("n", "=s",        Vscode_convert_to_spaces)
-    vim.keymap.set("n", "=t",        Vscode_convert_to_tabs)
+    vim.keymap.set("n", "==", Vscode_trim_trailing_whitespace)
+    vim.keymap.set("n", "gl", Vscode_open_link)
+    vim.keymap.set("n", "<C-k>", Vscode_insert_line_above_moveup)
+    vim.keymap.set("n", "<<", Vscode_outdent)
+    vim.keymap.set("n", ">>", Vscode_indent)
+    vim.keymap.set("n", "gcc", Vscode_comment)
+    vim.keymap.set("n", "=>", Vscode_reindent)
+    vim.keymap.set("n", "=s", Vscode_convert_to_spaces)
+    vim.keymap.set("n", "=t", Vscode_convert_to_tabs)
 
+    --# Symbols
+    vim.keymap.set("n", "<leader>s", Vscode_goto_editor_symbol)
+    vim.keymap.set("n", "<leader>S", Vscode_goto_workspace_symbol)
     vim.keymap.set("n", "<leader>w", Vscode_save)
+    vim.keymap.set("n", "<leader>b", Vscode_bookmark_list)
+    vim.keymap.set("n", "<leader>m", Vscode_bookmark_toggle)
     ---vim.keymap.set("n", "<leader>q", Vscode_quite)
+    --Tabs
+    -- vim.keymap.set("n", "<leader>tp", Vscode_editor_previous)
+    vim.keymap.set("n", "<leader>tp", ":Tabprevious<CR>")
+    -- vim.keymap.set("n", "<leader>tn", Vscode_editor_next)
+    vim.keymap.set("n", "<leader>tn", ":Tabnext<CR>")
+    vim.keymap.set("n", "<leader>to",":Tabonly<CR>")
+    -- vim.keymap.set("n", "<leader>to", Vscode_editor_close_other)
+    vim.keymap.set("n", "<leader>tt", Vscode_editor_new_untitled_file)
+    vim.keymap.set("n", "<leader>tc",":Tabclose<CR>")
 
     --# Vscode: Visual remaps
     vim.keymap.set("v", "gs", Vscode_vis_codesnap)
-    vim.keymap.set("v", "<",  Vscode_vis_outdent)
-    vim.keymap.set("v", ">",  Vscode_vis_indent)
+    vim.keymap.set("v", "<", Vscode_vis_outdent)
+    vim.keymap.set("v", ">", Vscode_vis_indent)
     vim.keymap.set("v", "gc", Vscode_vis_comment)
     vim.keymap.set("v", "=>", Vscode_vis_reindent)
 
     --# Vscode: Insert remaps
     vim.keymap.set("i", "<C-k>", Vscode_insert_line_above)
-    vim.keymap.set("n", "<leader>s",        Vscode_goto_editor_symbol)
 end
 
 --- Remappings
@@ -386,8 +469,8 @@ vim.keymap.set("i", "<C-h>", '<C-o>"_S<Esc><C-o>gI<BS>')
 --# Control remaps
 vim.keymap.set("", "<C-f>", "20jzz")
 vim.keymap.set("", "<C-b>", "20kzz")
-vim.keymap.set("", "<C-d>", "<C-d>zz")
----vim.keymap.set("", "<C-d>", "12jzz")
+--vim.keymap.set("", "<C-d>", "<C-d>zz")
+vim.keymap.set("", "<C-d>", "12jzz")
 vim.keymap.set("", "<C-u>", "12kzz")
 vim.keymap.set("", "<C-r>", "<C-r><C-o>")
 
@@ -420,4 +503,4 @@ vim.keymap.set("n", "_", "-")
 vim.keymap.set("o", "b", "vb")
 vim.keymap.set("o", "{", "V{")
 vim.keymap.set("o", "}", "V}")
-print("my config loaded")
+print("Config loaded successfully")
