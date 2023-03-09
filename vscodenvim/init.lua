@@ -50,6 +50,7 @@ require("packer").startup(function(use)
     use "jacoborus/tender.vim"
     use "farmergreg/vim-lastplace"
     use "ap/vim-css-color"
+    use "tpope/vim-commentary"
     use {
         "nvim-lualine/lualine.nvim",
         requires = { "kyazdani42/nvim-web-devicons", opt = true }
@@ -68,6 +69,10 @@ require("packer").startup(function(use)
             require("nvim-surround").setup()
         end
     })
+    use {
+        "ggandor/leap.nvim",
+        config = function() require("leap").set_default_keymaps() end
+    }
 end)
 
 --- Plugins: setup
