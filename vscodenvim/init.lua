@@ -339,6 +339,8 @@ function Vscode_editor_close_other() vim.fn.VSCodeNotify("workbench.action.close
 
 function Vscode_editor_new_untitled_file() vim.fn.VSCodeNotify("workbench.action.files.newUntitledFile") end
 
+function Vscode_editor_close_all_tabs() vim.fn.VSCodeNotify("workbench.action.closeAllEditors") end
+
 --# Vscode: Visual remaps
 function Vscode_vis_codesnap() vim.fn.VSCodeNotifyVisual("codesnap.start", true) end
 
@@ -378,7 +380,7 @@ if vim.g.vscode then
     --vim.keymap.set("n", "<leader>s", Vscode_toggle_sticky_scroll)
     vim.keymap.set("n", "==", Vscode_trim_trailing_whitespace)
     vim.keymap.set("n", "gl", Vscode_open_link)
-    vim.keymap.set("n", "<C-k>", Vscode_insert_line_above_moveup)
+    --vim.keymap.set("n", "<C-k>", Vscode_insert_line_above_moveup)
     vim.keymap.set("n", "<<", Vscode_outdent)
     vim.keymap.set("n", ">>", Vscode_indent)
     vim.keymap.set("n", "gcc", Vscode_comment)
@@ -402,6 +404,7 @@ if vim.g.vscode then
     -- vim.keymap.set("n", "<leader>to", Vscode_editor_close_other)
     vim.keymap.set("n", "<leader>tt", Vscode_editor_new_untitled_file)
     vim.keymap.set("n", "<leader>tc",":Tabclose<CR>")
+    vim.keymap.set("n", "<leader>ta", Vscode_editor_close_all_tabs)
 
     --# Vscode: Visual remaps
     vim.keymap.set("v", "gs", Vscode_vis_codesnap)
