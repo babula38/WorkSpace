@@ -17,11 +17,11 @@ vim.opt.clipboard      = "unnamedplus"
 -- See `:help vim.highlight.on_yank()`
 local highlight_group = vim.api.nvim_create_augroup('YankHighlight', { clear = true })
 vim.api.nvim_create_autocmd('TextYankPost', {
-  callback = function()
-    vim.highlight.on_yank()
-  end,
-  group = highlight_group,
-  pattern = '*',
+callback = function()
+vim.highlight.on_yank()
+end,
+group = highlight_group,
+pattern = '*',
 })
 ---vim.cmd("colorscheme tender")
 
@@ -42,37 +42,37 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 --- Plugins: Packer
 require("packer").startup(function(use)
-    use "wbthomason/packer.nvim"
-    use "savq/melange"
-    use "sainnhe/everforest"
-    use "sainnhe/edge"
-    use "sainnhe/gruvbox-material"
-    use "jacoborus/tender.vim"
-    use "farmergreg/vim-lastplace"
-    use "ap/vim-css-color"
-    use "tpope/vim-commentary"
-    use {
-        "nvim-lualine/lualine.nvim",
-        requires = { "kyazdani42/nvim-web-devicons", opt = true }
-    }
-    use {
-        "phaazon/hop.nvim",
-        branch = "v2",
-        config = function()
-            require("hop").setup({ keys = "asdfghjklqwertyuiopzxcvbnm;" })
-        end
-    }
-    use({
-        "kylechui/nvim-surround",
-        tag = "*",
-        config = function()
-            require("nvim-surround").setup()
-        end
-    })
-    use {
-        "ggandor/leap.nvim",
-        config = function() require("leap").set_default_keymaps() end
-    }
+use "wbthomason/packer.nvim"
+use "savq/melange"
+use "sainnhe/everforest"
+use "sainnhe/edge"
+use "sainnhe/gruvbox-material"
+use "jacoborus/tender.vim"
+use "farmergreg/vim-lastplace"
+use "ap/vim-css-color"
+---use "tpope/vim-commentary"
+use {
+    "nvim-lualine/lualine.nvim",
+    requires = { "kyazdani42/nvim-web-devicons", opt = true }
+}
+use {
+    "phaazon/hop.nvim",
+    branch = "v2",
+    config = function()
+        require("hop").setup({ keys = "asdfghjklqwertyuiopzxcvbnm;" })
+    end
+}
+use({
+    "kylechui/nvim-surround",
+    tag = "*",
+    config = function()
+        require("nvim-surround").setup()
+    end
+})
+use {
+    "ggandor/leap.nvim",
+    config = function() require("leap").set_default_keymaps() end
+}
 end)
 
 --- Plugins: setup
@@ -216,8 +216,8 @@ vim.keymap.set("n", "`z", function() vim.cmd(tostring(Mark_n)) end)
 
 --- Meta abstractions
 function FeedKeysCorrectly(keys)
-    local feedableKeys = vim.api.nvim_replace_termcodes(keys, true, false, true)
-    vim.api.nvim_feedkeys(feedableKeys, "n", true)
+local feedableKeys = vim.api.nvim_replace_termcodes(keys, true, false, true)
+vim.api.nvim_feedkeys(feedableKeys, "n", true)
 end
 
 --- Remap abstractions
@@ -227,33 +227,33 @@ local multiply_selection = '"rygv<Esc>"r' .. vim.v.count1 .. "p"
 
 --# Hops
 function Hop_forward_f_sameline()
-    hop.hint_char1({
-        direction = directions.AFTER_CURSOR,
-        current_line_only = true
-    })
+hop.hint_char1({
+    direction = directions.AFTER_CURSOR,
+    current_line_only = true
+})
 end
 
 function Hop_backward_f_sameline()
-    hop.hint_char1({
-        direction = directions.BEFORE_CURSOR,
-        current_line_only = true
-    })
+hop.hint_char1({
+    direction = directions.BEFORE_CURSOR,
+    current_line_only = true
+})
 end
 
 function Hop_forward_t_sameline()
-    hop.hint_char1({
-        direction = directions.AFTER_CURSOR,
-        current_line_only = true,
-        hint_offset = -1,
-    })
+hop.hint_char1({
+    direction = directions.AFTER_CURSOR,
+    current_line_only = true,
+    hint_offset = -1,
+})
 end
 
 function Hop_backward_t_sameline()
-    hop.hint_char1({
-        direction = directions.BEFORE_CURSOR,
-        current_line_only = true,
-        hint_offset = 1,
-    })
+hop.hint_char1({
+    direction = directions.BEFORE_CURSOR,
+    current_line_only = true,
+    hint_offset = 1,
+})
 end
 
 --# Vscode: Folding
@@ -290,8 +290,8 @@ function Vscode_open_link() vim.fn.VSCodeNotify("editor.action.openLink") end
 function Vscode_insert_line_above() vim.fn.VSCodeCall("editor.action.insertLineBefore") end
 
 function Vscode_insert_line_above_moveup()
-    Vscode_insert_line_above()
-    vim.cmd("norm k")
+Vscode_insert_line_above()
+vim.cmd("norm k")
 end
 
 function Vscode_outdent() vim.fn.VSCodeNotify("editor.action.outdentLines") end
@@ -341,16 +341,24 @@ function Vscode_editor_new_untitled_file() vim.fn.VSCodeNotify("workbench.action
 
 function Vscode_editor_close_all_tabs() vim.fn.VSCodeNotify("workbench.action.closeAllEditors") end
 
+--- Vscode: Problem / diagnostics
+function Vscode_editort_diagnostics_next() vim.fn.VSCodeNotify("editor.action.marker.next") end
+function Vscode_editort_diagnostics_previous() vim.fn.VSCodeNotify("editor.action.marker.prev") end
+
+-- Vscode: code action /  quick fix
+function Vscode_editor_code_action_or_quick_fix() vim.fn.VSCodeNotify("editor.action.quickFix") end
+
 --# Vscode: Visual remaps
-function Vscode_vis_codesnap() vim.fn.VSCodeNotifyVisual("codesnap.start", true) end
+--- function Vscode_vis_codesnap() vim.fn.VSCodeNotifyVisual("codesnap.start", true) end
 
-function Vscode_vis_outdent() vim.fn.VSCodeNotifyVisual("editor.action.outdentLines", false) end
+function Vscode_vis_outdent() vim.fn.VSCodeNotify("editor.action.outdentLines", false) end
 
-function Vscode_vis_indent() vim.fn.VSCodeNotifyVisual("editor.action.indentLines", false) end
+function Vscode_vis_indent() vim.fn.VSCodeNotify("editor.action.indentLines", false) end
 
-function Vscode_vis_comment() vim.fn.VSCodeNotifyVisual("editor.action.commentLine", false) end
+function Vscode_vis_comment() vim.fn.VSCodeNotify("editor.action.commentLine") end
+-- function Vscode_vis_comment() print("this is cliecked") end
 
-function Vscode_vis_reindent() vim.fn.VSCodeNotifyVisual("editor.action.reindentselectedlines", true) end
+function Vscode_vis_reindent() vim.fn.VSCodeNotify("editor.action.reindentselectedlines", true) end
 
 --- Plugins: options
 vim.g.camelcasemotion_key = "<leader>"
@@ -358,63 +366,71 @@ vim.g.targets_nl          = "nh"
 
 --- Vscode
 if vim.g.vscode then
-    --# Vscode: Folding
-    vim.keymap.set("n", "za", Vscode_toggle_fold)
-    vim.keymap.set("n", "zc", Vscode_fold_recursively)
-    vim.keymap.set("n", "zC", Vscode_fold_all)
-    vim.keymap.set("n", "zO", Vscode_unfold_all)
-    vim.keymap.set("n", "zo", Vscode_unfold_recursively)
-    vim.keymap.set("n", "zp", Vscode_goto_parent_fold)
+--# Vscode: Folding
+vim.keymap.set("n", "za", Vscode_toggle_fold)
+vim.keymap.set("n", "zc", Vscode_fold_recursively)
+vim.keymap.set("n", "zC", Vscode_fold_all)
+vim.keymap.set("n", "zO", Vscode_unfold_all)
+vim.keymap.set("n", "zo", Vscode_unfold_recursively)
+vim.keymap.set("n", "zp", Vscode_goto_parent_fold)
 
-    --# Vscode: All remaps
-    vim.keymap.set("", "zy", Vscode_toggle_typewriter)
+--# Vscode: All remaps
+vim.keymap.set("", "zy", Vscode_toggle_typewriter)
 
-    --# Vscode: Normal remaps
-    vim.keymap.set("n", "zh", Vscode_trim_left)
-    vim.keymap.set("n", "zl", Vscode_trim_right)
-    vim.keymap.set("n", "zi", Vscode_trim_both)
-    vim.keymap.set("n", "gD", Vscode_reveal_definition_aside)
-    vim.keymap.set("n", "gr", Vscode_goto_references)
-    vim.keymap.set("n", "gi", Vscode_goto_implementation)
-    vim.keymap.set("n", "gt", Vscode_goto_typedefination)
-    --vim.keymap.set("n", "<leader>s", Vscode_toggle_sticky_scroll)
-    vim.keymap.set("n", "==", Vscode_trim_trailing_whitespace)
-    vim.keymap.set("n", "gl", Vscode_open_link)
-    --vim.keymap.set("n", "<C-k>", Vscode_insert_line_above_moveup)
-    vim.keymap.set("n", "<<", Vscode_outdent)
-    vim.keymap.set("n", ">>", Vscode_indent)
-    vim.keymap.set("n", "gcc", Vscode_comment)
-    vim.keymap.set("n", "=>", Vscode_reindent)
-    vim.keymap.set("n", "=s", Vscode_convert_to_spaces)
-    vim.keymap.set("n", "=t", Vscode_convert_to_tabs)
+--# Vscode: Normal remaps
+vim.keymap.set("n", "zh", Vscode_trim_left)
+vim.keymap.set("n", "zl", Vscode_trim_right)
+vim.keymap.set("n", "zi", Vscode_trim_both)
+vim.keymap.set("n", "gD", Vscode_reveal_definition_aside)
+vim.keymap.set("n", "gr", Vscode_goto_references)
+vim.keymap.set("n", "gi", Vscode_goto_implementation)
+vim.keymap.set("n", "gt", Vscode_goto_typedefination)
+--vim.keymap.set("n", "<leader>s", Vscode_toggle_sticky_scroll)
+vim.keymap.set("n", "==", Vscode_trim_trailing_whitespace)
+vim.keymap.set("n", "gl", Vscode_open_link)
+--vim.keymap.set("n", "<C-k>", Vscode_insert_line_above_moveup)
+-- below is commented to use the neovim buidin
+-- vim.keymap.set("n", "<<", Vscode_outdent)
+-- vim.keymap.set("n", ">>", Vscode_indent)
+vim.keymap.set("n", "gcc", Vscode_comment)
+vim.keymap.set("n", "=>", Vscode_reindent)
+vim.keymap.set("n", "=s", Vscode_convert_to_spaces)
+vim.keymap.set("n", "=t", Vscode_convert_to_tabs)
 
-    --# Symbols
-    vim.keymap.set("n", "<leader>s", Vscode_goto_editor_symbol)
-    vim.keymap.set("n", "<leader>S", Vscode_goto_workspace_symbol)
-    vim.keymap.set("n", "<leader>w", Vscode_save)
-    vim.keymap.set("n", "<leader>b", Vscode_bookmark_list)
-    vim.keymap.set("n", "<leader>m", Vscode_bookmark_toggle)
-    ---vim.keymap.set("n", "<leader>q", Vscode_quite)
-    --Tabs
-    -- vim.keymap.set("n", "<leader>tp", Vscode_editor_previous)
-    vim.keymap.set("n", "<leader>tp", ":Tabprevious<CR>")
-    -- vim.keymap.set("n", "<leader>tn", Vscode_editor_next)
-    vim.keymap.set("n", "<leader>tn", ":Tabnext<CR>")
-    vim.keymap.set("n", "<leader>to",":Tabonly<CR>")
-    -- vim.keymap.set("n", "<leader>to", Vscode_editor_close_other)
-    vim.keymap.set("n", "<leader>tt", Vscode_editor_new_untitled_file)
-    vim.keymap.set("n", "<leader>tc",":Tabclose<CR>")
-    vim.keymap.set("n", "<leader>ta", Vscode_editor_close_all_tabs)
+--# LSP: Symbols
+vim.keymap.set("n", "<leader>s", Vscode_goto_editor_symbol)
+vim.keymap.set("n", "<leader>S", Vscode_goto_workspace_symbol)
+vim.keymap.set("n", "<leader>w", Vscode_save)
+vim.keymap.set("n", "<leader>b", Vscode_bookmark_list)
+vim.keymap.set("n", "<leader>m", Vscode_bookmark_toggle)
+---vim.keymap.set("n", "<leader>q", Vscode_quite)
+--Tabs
+-- vim.keymap.set("n", "<leader>tp", Vscode_editor_previous)
+vim.keymap.set("n", "<leader>tp", ":Tabprevious<CR>")
+-- vim.keymap.set("n", "<leader>tn", Vscode_editor_next)
+vim.keymap.set("n", "<leader>tn", ":Tabnext<CR>")
+vim.keymap.set("n", "<leader>to",":Tabonly<CR>")
+-- vim.keymap.set("n", "<leader>to", Vscode_editor_close_other)
+vim.keymap.set("n", "<leader>tt", Vscode_editor_new_untitled_file)
+vim.keymap.set("n", "<leader>tc",":Tabclose<CR>")
+vim.keymap.set("n", "<leader>ta", Vscode_editor_close_all_tabs)
 
-    --# Vscode: Visual remaps
-    vim.keymap.set("v", "gs", Vscode_vis_codesnap)
-    vim.keymap.set("v", "<", Vscode_vis_outdent)
-    vim.keymap.set("v", ">", Vscode_vis_indent)
-    vim.keymap.set("v", "gc", Vscode_vis_comment)
-    vim.keymap.set("v", "=>", Vscode_vis_reindent)
+--
+vim.keymap.set("n", "]d", Vscode_editort_diagnostics_next)
+vim.keymap.set("n", "[d", Vscode_editort_diagnostics_previous)
+vim.keymap.set("n", "<leader>a", Vscode_editor_code_action_or_quick_fix)
 
-    --# Vscode: Insert remaps
-    vim.keymap.set("i", "<C-k>", Vscode_insert_line_above)
+--# Vscode: Visual remaps
+-- vim.keymap.set("v", "gs", Vscode_vis_codesnap)
+-- Commented to use neovim build in
+-- vim.keymap.set("v", "<", Vscode_vis_outdent)
+-- vim.keymap.set("v", ">", Vscode_vis_indent)
+
+vim.keymap.set("v", "gc", Vscode_vis_comment)
+vim.keymap.set("v", "=>", Vscode_vis_reindent)
+
+--# Vscode: Insert remaps
+vim.keymap.set("i", "<C-k>", Vscode_insert_line_above)
 end
 
 --- Remappings
@@ -512,3 +528,4 @@ vim.keymap.set("o", "b", "vb")
 vim.keymap.set("o", "{", "V{")
 vim.keymap.set("o", "}", "V}")
 print("Config loaded successfully")
+
